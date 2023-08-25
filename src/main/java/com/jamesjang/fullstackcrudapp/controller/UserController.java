@@ -3,6 +3,8 @@ package com.jamesjang.fullstackcrudapp.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +18,7 @@ import com.jamesjang.fullstackcrudapp.repository.UserRepository;
 
 @RestController
 @RequestMapping("/crud")
+@CrossOrigin("http://localhost:3000/")
 public class UserController {
     
     @Autowired
@@ -34,6 +37,11 @@ public class UserController {
     @PutMapping("user/{id}")
     public void updateUser(@PathVariable User id){
         
+    }
+
+    @DeleteMapping("user/{id}")
+    public void deleteUser(@PathVariable User id){
+        userRepository.delete(id);
     }
 
 }
