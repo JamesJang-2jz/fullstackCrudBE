@@ -50,6 +50,14 @@ public class UserController {
         }).orElseThrow(() -> new UserNotFoundException(id));
     }
 
+    // @PutMapping("user/{id}")  // this uses a local exception handler compared to one above
+    // public User updateUser(@RequestBody User newUser, @PathVariable Long id){
+    //     if (!userRepository.existsById(id)){
+    //         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User does not exist");
+    //     }
+    //     return userRepository.save(newUser);
+    // }
+
     @DeleteMapping("user/{id}")
     public void deleteUser(@PathVariable User id){
         userRepository.delete(id);
