@@ -10,7 +10,8 @@ import jakarta.persistence.Id;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id", nullable = false, updatable = false)
     private Long id;
     private String username;
     private String name;
@@ -40,6 +41,4 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    
 }

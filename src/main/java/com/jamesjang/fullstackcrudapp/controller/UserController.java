@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,8 +60,12 @@ public class UserController {
     // }
 
     @DeleteMapping("user/{id}")
-    public void deleteUser(@PathVariable User id){
-        userRepository.delete(id);
+    public String deleteUser(@PathVariable Long id){
+        if(!userRepository.existsById(id)){
+            throw new UserNotFoundException(id);
+        }
+        userRepository.deleteById(id);
+        return "User with id " + id + " has been deleted";
     }
 
     // @GetMapping("user/{id}")
@@ -70,7 +75,7 @@ public class UserController {
 
     @GetMapping("user/{id}") // this is the more global approach while the one above is for handling exceptions locally within the controller method. 
     // this one centralizes the exception handling using @ControllerAdvice in the UserNotFoundAdvice. its a global exception handler for UserNotFoundException exception types
-    public User  getUserById(@PathVariable Long id) {
+    public User getUserById(@PathVariable Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
