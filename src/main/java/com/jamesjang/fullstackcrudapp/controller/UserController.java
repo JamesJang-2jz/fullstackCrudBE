@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.jamesjang.fullstackcrudapp.exception.UserNotFoundException;
 import com.jamesjang.fullstackcrudapp.model.User;
 import com.jamesjang.fullstackcrudapp.repository.UserRepository;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/crud")
@@ -37,8 +40,14 @@ public class UserController {
     }
 
     @PutMapping("user/{id}")
-    public void updateUser(@PathVariable User id){
-        
+    public User updateUser(@RequestBody User newUser, @PathVariable Long id){
+        return userRepository.findById(id)
+        .map(user -> {
+            user.setUsername(newUser.getUsername());
+            user.setEmail(newUser.getEmail());
+            user.setName(newUser.getName());
+            return userRepository.save(user);
+        }).orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @DeleteMapping("user/{id}")
@@ -46,9 +55,15 @@ public class UserController {
         userRepository.delete(id);
     }
 
-    @GetMapping("user/{id}")
-    public User getUserById(@PathVariable Long id){
-        return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find User " + id));
+    // @GetMapping("user/{id}")
+    // public User getUserById(@PathVariable Long id){
+    //     return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find User " + id));
+    // }
+
+    @GetMapping("user/{id}") // this is the more global approach while the one above is for handling exceptions locally within the controller method. 
+    // this one centralizes the exception handling using @ControllerAdvice in the UserNotFoundAdvice. its a global exception handler for UserNotFoundException exception types
+    public User  getUserById(@PathVariable Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
 }
